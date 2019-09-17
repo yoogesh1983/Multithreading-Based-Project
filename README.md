@@ -1,4 +1,4 @@
 # Multithreading-Based-Project
-- Following modules are available in this project:
+A complete Multithreading Projects that contain following Applications: </br></br>
 
-> ProducerAndConsumerUsingWaitAndNotify
+=> ProducerAndConsumerUsingWaitAndNotify </br>
