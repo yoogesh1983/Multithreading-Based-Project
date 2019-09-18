@@ -2,6 +2,7 @@ package com.yoogesh.multithreading;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import com.yoogesh.multithreading.database.MyQueue;
 import com.yoogesh.multithreading.threads.Consumer;
@@ -34,8 +35,8 @@ public static void main(String[] args) throws InterruptedException {
     }
 	service.shutdown();
 	
-	//Main thread should wait until t1 and t2 complete their task. Only after that, the program can be terminated.Since Join doesn't work here, so using sleep() method
-    Thread.sleep(100);
+	//Main thread should wait until t1 and t2 complete their task. Only after that, the program can be terminated.Since Join doesn't work here, so using awaitTermination() here which is a kind of Thread.sleep(1000)
+    service.awaitTermination(1000, TimeUnit.MILLISECONDS);
 	
 	System.out.println("Main thread finally completes the execution and going to terminate the program safely.");
 
