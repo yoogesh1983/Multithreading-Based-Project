@@ -1,8 +1,8 @@
 package com.yoogesh.multithreading;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import com.yoogesh.multithreading.database.MyQueue;
 import com.yoogesh.multithreading.threads.Consumer;
@@ -13,8 +13,10 @@ public class Main {
 public static void main(String[] args) throws InterruptedException {
 	
 	MyQueue mq = new MyQueue();
-	Producer t1 = new Producer(mq);
-	Consumer t2 = new Consumer(mq);
+	CountDownLatch latch = new CountDownLatch(2);  /* This is a replacement of traditional join() method */
+	
+	Producer t1 = new Producer(mq, latch);
+	Consumer t2 = new Consumer(mq, latch);
 	
 	/*
 	t1.start();
@@ -27,6 +29,12 @@ public static void main(String[] args) throws InterruptedException {
 	System.out.println("Main thread finally completes the execution and going to terminate the program safely.");
 	*/
 		
+	startThreadInaModernWay(t1, t2, latch);
+
+}
+
+private static void startThreadInaModernWay(Producer t1, Consumer t2, CountDownLatch latch)
+		throws InterruptedException {
 	Thread[] jobs = { t1, t2 };
 	ExecutorService service = Executors.newFixedThreadPool(2);
 	for(Thread job : jobs)
@@ -35,10 +43,9 @@ public static void main(String[] args) throws InterruptedException {
     }
 	service.shutdown();
 	
-	//Main thread should wait until t1 and t2 complete their task. Only after that, the program can be terminated.Since Join doesn't work here, so using awaitTermination() here which is a kind of Thread.sleep(1000)
-    service.awaitTermination(1000, TimeUnit.MILLISECONDS);
+	//Main thread should wait until t1 and t2 complete their task. Only after that, the program can be terminated.Since Join doesn't work here, so using countDownLatch
+	latch.await();
 	
 	System.out.println("Main thread finally completes the execution and going to terminate the program safely.");
-
 }
 }
